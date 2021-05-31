@@ -35,7 +35,7 @@ function EditControl(props) {
 
   React.useEffect(() => {
     const { map } = context;
-    const { onMounted } = props;
+    const { onMounted, isOverrideCreateEvent, onCreated } = props;
 
     for (const key in eventHandlers) {
       map.on(eventHandlers[key], (evt) => {
@@ -46,9 +46,11 @@ function EditControl(props) {
           let handler = handlers[0];
           props[handler] && props[handler](evt);
         }
-      });
+      }); 0
     }
-    map.on(leaflet.Draw.Event.CREATED, onDrawCreate);
+
+    const onCreateEventHandler = isOverrideCreateEvent && onCreated ? onCreated : onDrawCreate;
+    map.on(leaflet.Draw.Event.CREATED, onCreateEventHandler);
     drawRef.current = createDrawElement(props, context);
     map.addControl(drawRef.current);
     onMounted && onMounted(drawRef.current);
